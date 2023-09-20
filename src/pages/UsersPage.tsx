@@ -12,7 +12,7 @@ import {ModalBoxStyles} from "../constants/ModalBoxStyles";
 import {TUser} from "../models/types";
 import {useSnackbar} from "../hooks/useSnackBar";
 export function UsersPage() {
-
+    // тут написан хук для вывода сообщения в нотифай
     const snackbar = useSnackbar()
 
     const defaultForm = {
@@ -21,18 +21,24 @@ export function UsersPage() {
         surname: '',
         email: ''
     }
-
+    // данный юз стейт используется для хранения юзеров
     const [users, setUsers] = useState<TUser[]>([])
+
+    // юз стейт для открытия закрытия модалки
     const [isModal, setModal] = useState<boolean>(false);
 
+
+    // валидатор для обратботки формы
     const validationSchema = Yup.object({
         name: Yup.string().required('Имя обязательно'),
         surname: Yup.string().required('Фамилия обязательна'),
         email: Yup.string().email('Неправильный формат email').required('Email обязателен'),
     });
 
-
+    // изначальное состаяние формы
     const [initialValues, setInitialValues] = useState(defaultForm)
+
+    // обработчки сабмита в форме в зависимости от того есть ли id юзера идет создание или редактирование юзера
     const handleSubmit = (values: typeof initialValues) => {
         if (!values.id) {
             values.id = new Date().getTime()
@@ -52,21 +58,25 @@ export function UsersPage() {
     };
 
 
+    //обработчк закрытия модалки с изменением состаяния формы до изначального состояния
     const handleCloseModal = () => {
         setModal(false);
         setInitialValues(defaultForm)
     };
 
+    // обработчик открытия модалки
     const handleOpenCreateModal = () => {
         setModal(true)
     }
 
+    // функция которая присваевает значение юзера к форме для редактирования
     const editUser = (user: TUser) => {
         // @ts-ignore
         setInitialValues(user)
         setModal(true)
     }
 
+    //функция для удаления юзера из списка юзеров
     const handleDeleteUserById = (id: number | undefined) => {
         if (id === undefined) return
         const arrayWithoutDeleteUser = users.filter((user) => user.id !== id )
